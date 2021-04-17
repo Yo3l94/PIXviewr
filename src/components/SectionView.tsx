@@ -16,9 +16,9 @@ export const SectionView = () => {
   const dispatch = useDispatch()
   const [page, setPage] = useState(1)
   const [detailsOpened, setDetailsOpened] = useState(false)
-  const { currentSort, onSortChange } = useSort()
-  const { currentSort: secondSort, onSortChange: onSecondSortChange } = useSort()
-  const [curSortType, setType] = useState('likes')
+  const { currentSort: likesSort, onSortChange: onLikesSort } = useSort()
+  const { currentSort: dateSort, onSortChange: onDateSort } = useSort()
+  const [curSortType, setType] = useState<keyof typeof sortTypes>('likes')
 
   useWatchForError()
 
@@ -34,12 +34,12 @@ export const SectionView = () => {
     setDetailsOpened(true)
   }
 
-  const handleSort = (type: 'likes' | 'date') => () => {
+  const handleSort = (type: keyof typeof sortTypes) => () => {
     setType(type)
     if (type === 'likes') {
-      return onSortChange()
+      return onLikesSort()
     } else {
-      return onSecondSortChange()
+      return onDateSort()
     }
   }
 
@@ -74,7 +74,12 @@ export const SectionView = () => {
     }
   };
 
-  const photosToRender = [...currentTopic.photos].sort(sortTypes[curSortType][currentSort].fn).map((photo: any) => {
+  const sortMap: any = {
+    likes: likesSort,
+    date: dateSort
+  }
+
+  const photosToRender = [...currentTopic.photos].sort(sortTypes[curSortType][sortMap[curSortType]].fn).map((photo: any) => {
     return (
       <StyledImage key={photo.id} onClick={handlePhotoClick(photo)} >
         <div className='wrapper'>
@@ -92,11 +97,11 @@ export const SectionView = () => {
     <div>
       <StyledFiltersWrapper>
         <div onClick={handleSort('likes')} className='filter-btn'>
-          {sortTypes.likes[currentSort].component()}
+          {sortTypes.likes[likesSort].component()}
           Likes
         </div>
         <div onClick={handleSort('date')} className='filter-btn'>
-          {sortTypes.date[secondSort].component()}
+          {sortTypes.date[dateSort].component()}
           Date
         </div>
       </StyledFiltersWrapper>

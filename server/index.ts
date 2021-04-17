@@ -22,7 +22,7 @@ app.use(helmet.frameguard({ action: 'SAMEORIGIN' }));
 app.use(cors());
 
 const unsplash = createApi({
-	accessKey: '[your Unsplassh access key]'
+	accessKey: 'zFF2JTkyPnVzYCe20N1thTAyks6huzXoxJYWj3KTNyQ'
 });
 
 app.get('/topics', (req: Request, res: Response) => {
